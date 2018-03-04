@@ -23,7 +23,6 @@ connection.connect(function(err) {
 // function which prompts the user for what action they should take
 function start() {
 
-
     inquirer
       .prompt({
         name: "action",
@@ -62,17 +61,17 @@ function viewAllProducts() {
     if (err) throw err;
     // instantiate
     var table = new Table({
-    head: ['ID', 'Product', 'Department', 'Price', 'Quantity']
-    , colWidths: [5, 10, 10, 5, 5]
+    head: ['ID', 'Product', 'Department', 'Price', 'Quantity'],
+    colWidths: [5, 10, 10, 5, 5]
     });
     var choiceArray = [];
-            for (var i = 0; i < results.length; i++) {
-              choiceArray.push(results[i].item_name);
-              // table is an Array, so you can `push`, `unshift`, `splice` and friends
-              table.push(
-                  [results[i].id, results[i].item_name, results[i].department_name, results[i].price, results[i].stock_quantity]
-              );
-            }
+    for (var i = 0; i < results.length; i++) {
+      choiceArray.push(results[i].item_name);
+      // table is an Array, so you can `push`, `unshift`, `splice` and friends
+      table.push(
+          [results[i].id, results[i].item_name, results[i].department_name, results[i].price, results[i].stock_quantity]
+      );
+    }
     // table cli turns info
     console.log(table.toString());
     start();
@@ -84,20 +83,80 @@ function viewLowInventory() {
     if (err) throw err;
     // instantiate
     var table = new Table({
-    head: ['ID', 'Product', 'Department', 'Price', 'Quantity']
-    , colWidths: [5, 10, 10, 5, 5]
+    head: ['ID', 'Product', 'Department', 'Price', 'Quantity'],
+    colWidths: [5, 10, 10, 5, 5]
     });
     var choiceArray = [];
-            for (var i = 0; i < results.length; i++) {
-              choiceArray.push(results[i].item_name);
-              // table is an Array, so you can `push`, `unshift`, `splice` and friends
-              table.push(
-                  [results[i].id, results[i].item_name, results[i].department_name, results[i].price, results[i].stock_quantity]
-              );
-            }
+    for (var i = 0; i < results.length; i++) {
+      choiceArray.push(results[i].item_name);
+      // table is an Array, so you can `push`, `unshift`, `splice` and friends
+      table.push(
+          [results[i].id, results[i].item_name, results[i].department_name, results[i].price, results[i].stock_quantity]
+      );
+    }
     // table cli turns info
     console.log(table.toString());
     start();
+  });
+}
+
+function increaseStockQuantity() {
+  connection.query("SELECT * FROM products", function(err, results) {
+    if (err) throw err;
+    // instantiate
+    var table = new Table({
+    head: ['ID', 'Product', 'Department', 'Price', 'Quantity'],
+    colWidths: [5, 10, 10, 5, 5]
+    });
+    var choiceArray = [];
+    for (var i = 0; i < results.length; i++) {
+      choiceArray.push(results[i].item_name);
+      // table is an Array, so you can `push`, `unshift`, `splice` and friends
+      table.push(
+          [results[i].id, results[i].item_name, results[i].department_name, results[i].price, results[i].stock_quantity]
+      );
+    }
+    // table cli turns info
+    console.log(table.toString());
+    inquirer
+      .prompt([
+        {
+          name: "item_name",
+          type: "input",
+          message: "What is the item name you would like to update?"
+        },
+        {
+          name: "quantity",
+          type: "input",
+          message: "How many would you like to add to the stock quantity?"
+        }
+      ])
+      .then(function(answer) {
+        // get the information of the chosen item
+        var chosenItem;
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].item_name === answer.item_name) {
+            chosenItem = results[i];
+          }
+        }
+        var newQuantity =  parseInt(chosenItem.stock_quantity) + parseInt(answer.quantity);
+          connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [
+              {
+                stock_quantity: newQuantity
+              },
+              {
+                item_name: chosenItem.item_name
+              }
+            ],
+            function(error) {
+              if (error) throw err;
+              console.log("Quantity updated successfully!");
+              start();
+            }
+          );
+      });
   });
 }
 
