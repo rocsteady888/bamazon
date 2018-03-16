@@ -1,9 +1,9 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
-var Table = require('cli-table');
 
+const mysql = require("mysql");
+const inquirer = require("inquirer");
+const Table = require('cli-table');
 // create the connection information for the sql database
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
 
@@ -12,6 +12,7 @@ var connection = mysql.createConnection({
   password: "root",
   database: "bamazon_db"
 });
+
 
 // connect to the mysql server and sql database
 connection.connect(function(err) {
@@ -22,14 +23,15 @@ connection.connect(function(err) {
 
 // function which prompts the user for what action they should take
 function start() {
+
   connection.query("SELECT * FROM products", function(err, results) {
     if (err) throw err;
     // instantiate
-    var table = new Table({
+    let table = new Table({
     head: ['ID', 'Product', 'Department', 'Price', 'Quantity']
     , colWidths: [10, 20, 20, 10, 10]
     });
-    var choiceArray = [];
+    let choiceArray = [];
             for (var i = 0; i < results.length; i++) {
               choiceArray.push(results[i].item_name);
               // table is an Array, so you can `push`, `unshift`, `splice` and friends
