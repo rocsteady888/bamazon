@@ -1,12 +1,5 @@
 # Bamazon
-            :collision::collision::collision::collision::collision:
-          :collision::collision::collision::collision::collision:
-        :collision::collision::collision::collision::collision:
-      :collision::collision::collision::collision::collision:
-      :collision::collision::collision::collision::collision:
-    :collision::collision::collision::collision::collision:
-  :collision::collision::collision::collision::collision:
-:collision::collision::collision::collision::collision:
+            :collision:
 
 #### Node.js & MySQL
 
