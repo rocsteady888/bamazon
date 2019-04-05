@@ -72,9 +72,9 @@ function start() {
           }
         }
 
-        // determine if bid was high enough
-        if (chosenItem.stock_quantity > parseInt(answer.quantity)) {
-          // bid was high enough, so update db, let the user know, and start over
+        // determine if inventory is high enough
+        if (parseInt(answer.quantity) <= parseInt(chosenItem.stock_quantity)) {
+          // enough inventory, so update db, let the user know, and start over
           updateQuantity = parseInt(chosenItem.stock_quantity) - parseInt(answer.quantity);
           connection.query(
             "UPDATE products SET ? WHERE ?",
